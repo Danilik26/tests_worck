@@ -28,31 +28,45 @@ class Book:
             print('Книга не найдена,  пожалуйста проверьте вводимые данные')
 
     def _save(self):
-        print(self.all_json)
         with open('books.json', 'w') as add:
             json.dump(self.all_json, add)
+
+    def _search_book(self, data_serch):
+        if data_serch.isdigit():
+            return data_serch
+        else:
+            for id_book in self.all_json:
+                info_book = self.all_json[id_book]
+                for i_f in info_book:
+                    if info_book[i_f] == data_serch:
+                        return id_book
+        print('Книга не найдена, пожалуста проверьте данные на коректность')
+        return None
         
     def addbook(self):
         title = input('Введите название книги: ')
         aythor = input('Введите имя и фамилию автора: ')
         year = input('Введите дату издания: ')
-        self.all_json[3] = {'title':title, 'aythor':aythor, 'year':year, 'statys':'выдана'}
+        self.all_json[3] = {'title':title, 'aythor':aythor, 'year':year, 'statys':STATUS_CHOISES['1']}
         self._save()
             
 
     def cheng_status_book(self):
         data_for_chages_book = input('Введите id, название, автора, или дату издания книги: ')
         if data_for_chages_book.isdigit():
-            self._chenges(data_for_chages_book)
+            id = self._search_book(data_for_chages_book)
+            self._chenges(id)
         else:
-            for id_book in self.all_json:
-                info_book = self.all_json[id_book]
-                for i_f in info_book:
-                    if info_book[i_f] == data_for_chages_book:
-                        self._chenges(id_book)
-        # with open('books.json', 'w') as s:
-        #     read_json['dcs'] = 1
-        #     print(json.dump(read_json, s))
+            id = self._search_book(data_for_chages_book)
+            self._chenges(id)
+
+    def delete_book(self):
+        data_for_delete_book = input('Введите id, название, автора, или дату издания книги: ')
+        id = self._search_book(data_for_delete_book)
+        del self.all_json[id]
+        self._save()
+        
 if __name__ == '__main__':
     x = Book()
+    x.delete_book()
     print(x.all_json)
