@@ -1,5 +1,8 @@
 import json
+from json.decoder import JSONDecodeError
 from typing import Dict
+
+JSON_FIEL_NAME = 'books.json'
 
 STATUS_CHOISES = {
     '1':'В наличии',
@@ -8,23 +11,40 @@ STATUS_CHOISES = {
 
 class Book:
     def __init__(self):
-        self.all_json: Dict = self._get_all_json()
+        self.all_json: Dict = self._get_all_json() # all data from json file
+
+    """
+    function get all json data from said json fiel
+    """    
 
     def _get_all_json(self) -> Dict :
-        with open('books.json','r') as a:
-            return json.load(a)
-        
+        with open(JSON_FIEL_NAME,'r') as a:
+            try:
+                return json.load(a)
+            except JSONDecodeError:
+                return {}
+            
+    """
+    function return next id for new book
+    """
+
     def _next_id(self) -> int:
         try:
             return int(list(self.all_json.keys())[-1]) + 1
         except:
             return 1
         
-    def _chenges(self, data_for_chages_book: str) -> bool:
+    """
+    function get code for chenge status 
+    make chenge status for specified book
+    save change 
+    """
+        
+    def _chenges_status(self, data_for_chages_book: str) -> bool:
         try:
             book: Dict = self.all_json[data_for_chages_book]
             type_status: str = input('Для изменения статуса на \'в наличии\' введите 1 \n'
-                                'для изменения статуса на \'выданна\' ddtlbnt 2\n'
+                                'для изменения статуса на \'выданна\' 2\n'
                                 'Введите операцию: ')
             if type_status == '1':
                 book['statys'] = STATUS_CHOISES[type_status]
@@ -36,9 +56,18 @@ class Book:
             print('Книга не найдена, пожалуйста проверьте вводимые данные\n')
             return False
 
+    """
+    function save all chenges in books and save new add book 
+    """
+
     def _save(self):
-        with open('books.json', 'w') as add:
+        with open(JSON_FIEL_NAME, 'w') as add:
             json.dump(self.all_json, add)
+
+    """
+    function sherch id book from specified data for sherch 
+    return id found book
+    """
 
     def _search_id_book(self, data_serch: str) -> bool:
         if data_serch.isdigit():
@@ -54,6 +83,12 @@ class Book:
                         return id_book
         print('Книга не найдена, пожалуста проверьте данные на коректность\n')
         return None
+    
+    def _cheack_year(self, year: str) -> bool:
+        if year.isdigit():
+            return True
+        else:
+            return False
         
     def addbook(self):
         title: str = input('Введите название книги: ')
@@ -62,9 +97,13 @@ class Book:
         print('------')
         year: str = input('Введите год издания: ')
         print('\n')
-        self.all_json[self._next_id()] = {'title':title, 'aythor':aythor, 'year':year, 'statys':STATUS_CHOISES['1']}
-        self._save()
-        print('Операция прошла успешно!\n')
+        if self._cheack_year(year):
+            self.all_json[self._next_id()] = {'title':title, 'aythor':aythor, 'year':year, 'statys':STATUS_CHOISES['1']}
+            self._save()
+            print('Операция прошла успешно!\n')
+        else:
+            print('Невернно введён год издания, попробуйте ещё раз\n')
+            self.addbook()
 
     def cheng_status_book(self):
         data_for_chages_book: str = input('Введите id, название, автора, или дату издания книги: ')
@@ -72,15 +111,19 @@ class Book:
         if data_for_chages_book.isdigit():
             id: bool = self._search_id_book(data_for_chages_book)
             if id:
-                cheng: bool = self._chenges(id)
+                cheng: bool = self._chenges_status(id)
                 if cheng:
                     print('Операция прошла успешно! \n')
+            else:
+                self.cheng_status_book()
         else:
             id: bool = self._search_id_book(data_for_chages_book)
             if id:
-                cheng: bool = self._chenges(id)
+                cheng: bool = self._chenges_status(id)
                 if cheng:
                     print('Операция прошла успешно!')
+            else:
+                self.cheng_status_book()
         
 
     def delete_book(self):
@@ -90,6 +133,8 @@ class Book:
         if id:
             del self.all_json[id]
             self._save()
+        else:
+            self.delete_book()
 
     def show_all_books(self):
         print('-----------')
