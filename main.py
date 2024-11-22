@@ -9,7 +9,7 @@ class Book:
     def __init__(self):
         self.all_json = self._get_all_json()
 
-    def _get_all_json(self):
+    def _get_all_json(self): 
         with open('books.json','r') as a:
             return json.load(a)
         
@@ -25,7 +25,7 @@ class Book:
                 book['statys'] = STATUS_CHOISES[type_status]
             self._save()
         except KeyError:
-            print('Книга не найдена,  пожалуйста проверьте вводимые данные')
+            print('Книга не найдена, пожалуйста проверьте вводимые данные')
 
     def _save(self):
         with open('books.json', 'w') as add:
@@ -49,7 +49,7 @@ class Book:
         year = input('Введите дату издания: ')
         self.all_json[3] = {'title':title, 'aythor':aythor, 'year':year, 'statys':STATUS_CHOISES['1']}
         self._save()
-            
+        print('Операция прошла успешно!')
 
     def cheng_status_book(self):
         data_for_chages_book = input('Введите id, название, автора, или дату издания книги: ')
@@ -59,14 +59,23 @@ class Book:
         else:
             id = self._search_book(data_for_chages_book)
             self._chenges(id)
+        print('Операция прошла успешно!')
 
     def delete_book(self):
         data_for_delete_book = input('Введите id, название, автора, или дату издания книги: ')
         id = self._search_book(data_for_delete_book)
         del self.all_json[id]
         self._save()
+
+    def show_all_books(self):
+        print('-----------')
+        for i in self.all_json:
+            print('id',i)
+            for j in self.all_json[i]:
+                print(j ,self.all_json[i][j])
+            print('-----------')
+
         
 if __name__ == '__main__':
     x = Book()
-    x.delete_book()
-    print(x.all_json)
+    x.show_all_books()
