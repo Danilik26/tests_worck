@@ -104,6 +104,7 @@ class Book:
         else:
             print('Невернно введён год издания, попробуйте ещё раз\n')
             self.addbook()
+        input('Для продолжения действия нажмите любую кнопку')
 
     def cheng_status_book(self):
         data_for_chages_book: str = input('Введите id, название, автора, или дату издания книги: ')
@@ -124,6 +125,7 @@ class Book:
                     print('Операция прошла успешно!')
             else:
                 self.cheng_status_book()
+        input('Для продолжения действия нажмите любую кнопку')
         
 
     def delete_book(self):
@@ -133,8 +135,10 @@ class Book:
         if id:
             del self.all_json[id]
             self._save()
+            print('Операция прошла успешно!')
         else:
             self.delete_book()
+        input('Для продолжения действия нажмите любую кнопку')
 
     def show_all_books(self):
         print('-----------')
@@ -143,14 +147,21 @@ class Book:
             for j in self.all_json[i]:
                 print(j, ':' ,self.all_json[i][j])
             print('-----------')
+        input('Для продолжения действия нажмите любую кнопку')
 
     def swow_one_book(self):
+        print('Все авторы')
+        for i in self.all_json:
+            for x in self.all_json[i]:
+                if x == 'aythor':
+                    print(self.all_json[i][x])
         dataserh: str = input('Введите id, название, автора, или дату издания книги: ')
         print('\n')
         id_book: bool = self._search_id_book(dataserh)
         if id_book:
             for i in self.all_json[id_book]:
                 print(i, ':', self.all_json[id_book][i])
+        input('Для продолжения действия нажмите любую кнопку')
         
 if __name__ == '__main__':
     while True:
