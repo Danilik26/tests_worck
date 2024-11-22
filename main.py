@@ -15,7 +15,10 @@ class Book:
             return json.load(a)
         
     def _next_id(self) -> int:
-        return int(list(self.all_json.keys())[-1]) + 1
+        try:
+            return int(list(self.all_json.keys())[-1]) + 1
+        except:
+            return 1
         
     def _chenges(self, data_for_chages_book: str) -> bool:
         try:
@@ -91,9 +94,9 @@ class Book:
     def show_all_books(self):
         print('-----------')
         for i in self.all_json:
-            print('id',i)
+            print('id', ':',i)
             for j in self.all_json[i]:
-                print(j ,self.all_json[i][j])
+                print(j, ':' ,self.all_json[i][j])
             print('-----------')
 
     def swow_one_book(self):
@@ -102,8 +105,35 @@ class Book:
         id_book: bool = self._search_id_book(dataserh)
         if id_book:
             for i in self.all_json[id_book]:
-                print(i, self.all_json[id_book][i])
+                print(i, ':', self.all_json[id_book][i])
         
 if __name__ == '__main__':
-    x = Book()
-    x.show_all_books()
+    while True:
+        book = Book()
+        action = input('Для просмотра всех книг введите 1 \n'
+                       '\n'
+                       'для просмо конкретной книги введите 2 \n'
+                       '\n'
+                       'для удаления книги введите 3 \n'
+                       '\n'
+                       'для втавки новой книги введите 4 \n'
+                       '\n'
+                       'для зменения статуса книги введите 5 \n'
+                       '\n'
+                       'для окончания работы введите 6 \n'
+                       '\n'
+                       'поле ввода: ')
+        if action == '1':
+            book.show_all_books()
+        elif action == '2':
+            book.swow_one_book()
+        elif action == '3':
+            book.delete_book()
+        elif action == '4':
+            book.addbook()
+        elif action == '5':
+            book.cheng_status_book()
+        elif action == '6':
+            break
+        else:
+            print('Код операции не верен, попробуйте ещё раз \n')
